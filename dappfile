@@ -1,0 +1,9 @@
+name: ds-auth
+version: 0.0.1-dev
+tags: []
+layout:
+  sol_sources: contracts
+  build_dir: build
+dependencies: {}
+ignore:
+    - authority_lock.sol
