@@ -1,3 +1,5 @@
+pragma solidity ^0.4.2;
+
 // import this as "auth.sol" and use "DSAuth"
 import 'enum.sol';
 import 'events.sol';
@@ -25,7 +27,7 @@ contract DSAuthorized is DSAuthModesEnum, DSAuthorizedEvents
     // Attach the `auth()` modifier to functions to protect them.
     modifier auth() {
         if( isAuthorized() ) {
-            _
+            _;
         } else {
             throw;
         }
@@ -33,7 +35,7 @@ contract DSAuthorized is DSAuthModesEnum, DSAuthorizedEvents
     // A version of `auth()` which implicitly returns garbage instead of throwing.
     modifier try_auth() {
         if( isAuthorized() ) {
-            _
+            _;
         }
     }
 
