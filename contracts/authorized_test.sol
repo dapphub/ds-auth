@@ -22,6 +22,11 @@ import 'auth.sol';
 
 
 contract DSAuthorizedUser is DSAuthorized {
+    modifier try_auth() {
+        if( isAuthorized() ) {
+            _;
+        }
+    }
     function triggerAuth() auth() returns (bool) {
         return true;
     }
@@ -41,7 +46,7 @@ contract DSAuthorizedTester is Tester {
     }
 }
 
-contract DSAuthorizedTest is Test, DSAuthUser, DSAuthorizedEvents {
+contract DSAuthorizedTest is Test, DSAuthEvents {
     DSAuthorizedUser auth;
     DSAuthorizedTester tester;
 
@@ -56,7 +61,7 @@ contract DSAuthorizedTest is Test, DSAuthUser, DSAuthorizedEvents {
     function testConstructorEvent() {
         var newAuth = new DSAuthorized();
         expectEventsExact(newAuth);
-        DSAuthUpdate(this, DSAuthModes.Owner );
+        DSOwnerUpdate(this);
     }
 
     function testOwnedAuth() {
@@ -79,35 +84,35 @@ contract DSAuthorizedTest is Test, DSAuthUser, DSAuthorizedEvents {
         var accepter = new AcceptingAuthority();
 
         expectEventsExact(auth);
-        DSAuthUpdate(accepter, DSAuthModes.Authority);
+        DSAuthorityUpdate(accepter);
 
-        auth.updateAuthority(accepter, DSAuthModes.Authority);
+        auth.setAuthority(accepter);
     }
 
     function testAuthorityAuth() {
         var accepter = new AcceptingAuthority();
-        auth.updateAuthority(accepter, DSAuthModes.Authority);
+        auth.setAuthority(accepter);
 
         assertTrue(auth.triggerAuth());
     }
 
     function testFailAuthorityAuth() {
         var rejecter = new RejectingAuthority();
-        auth.updateAuthority(rejecter, DSAuthModes.Authority);
+        auth.setAuthority(rejecter);
 
         tester.doTriggerAuth();
     }
 
     function testAuthorityTryAuth() {
         var accepter = new AcceptingAuthority();
-        auth.updateAuthority(accepter, DSAuthModes.Authority);
+        auth.setAuthority(accepter);
 
         assertTrue(auth.triggerTryAuth());
     }
 
     function testAuthorityTryAuthUnauthorized() {
         var rejecter = new RejectingAuthority();
-        auth.updateAuthority(rejecter, DSAuthModes.Authority);
+        auth.setAuthority(rejecter);
 
         assertFalse(tester.doTriggerTryAuth());
     }

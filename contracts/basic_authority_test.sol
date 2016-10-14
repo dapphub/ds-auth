@@ -25,25 +25,26 @@ import 'auth_test.sol';  // Vault
 import 'basic_authority.sol';
 
 
-contract BasicAuthorityTest is Test, DSAuthUser, DSBasicAuthorityEvents {
+contract BasicAuthorityTest is Test, DSAuthEvents, DSBasicAuthorityEvents {
     DSBasicAuthority a;
     DSBasicAuthority a2;
     Vault v;
     function setUp() {
         a = new DSBasicAuthority();
         v = new Vault();
-        v.updateAuthority(a, DSAuthModes.Authority);
+        v.setAuthority(a);
+        v.setOwner(0);
     }
     function testExportAuthorized() {
         assertFalse( v.breached(), "vault started breached" );
         expectEventsExact(a);
-        DSSetCanCall(this, v, bytes4(sha3("updateAuthority(address,uint8)")),
+        DSSetCanCall(this, v, bytes4(sha3("setOwner(address)")),
                      true);
 
-        a.setCanCall(this, v, bytes4(sha3("updateAuthority(address,uint8)")),
+        a.setCanCall(this, v, bytes4(sha3("setOwner(address)")),
                      true);
 
-        v.updateAuthority( address(this), DSAuthModes.Owner );
+        v.setOwner( address(this) );
         v.breach();
         assertTrue( v.breached(), "couldn't after export attempt" );
     }

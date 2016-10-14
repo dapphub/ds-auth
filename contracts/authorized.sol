@@ -21,7 +21,7 @@ pragma solidity ^0.4.2;
 import 'events.sol';
 import 'authority.sol';
 
-contract DSAuth {
+contract DSAuthorized {
     address      public  owner;
     DSAuthority  public  authority;
 
@@ -45,7 +45,7 @@ contract DSAuth {
     function isAuthorized() internal returns (bool) {
         if (msg.sender == owner) {
             return true;
-        } else if (authority == 0) {
+        } else if (address(authority) == (0)) {
             return false;
         } else {
             return authority.canCall(msg.sender, this, msg.sig);

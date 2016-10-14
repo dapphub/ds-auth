@@ -14,10 +14,9 @@
    limitations under the License.
 */
 
+pragma solidity ^0.4.2;
 
-import 'enum.sol';
-
-contract DSAuthorizedEvents is DSAuthModesEnum {
-    event DSAuthUpdate( address indexed auth, DSAuthModes indexed mode );
+contract DSAuthEvents {
+    event DSOwnerUpdate( address indexed owner );
+    event DSAuthorityUpdate( address indexed authority );
 }
-

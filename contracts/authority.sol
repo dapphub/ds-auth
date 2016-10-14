@@ -30,7 +30,7 @@ contract DSAuthority {
              returns (bool);
 }
 
-contract AcceptingAuthority {
+contract AcceptingAuthority is DSAuthority {
     function canCall( address caller
                     , address code
                     , bytes4 sig )
@@ -40,7 +40,8 @@ contract AcceptingAuthority {
         return true;
     }
 }
-contract RejectingAuthority {
+
+contract RejectingAuthority is DSAuthority {
     function canCall( address caller
                     , address callee
                     , bytes4 sig )

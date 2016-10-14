@@ -37,7 +37,7 @@ contract Vault is DSAuth {
     }
 }
 
-contract AuthTest is Test, DSAuthUser {
+contract AuthTest is Test, DSAuthEvents {
     Vault v;
     AcceptingAuthority AA;
     RejectingAuthority RA;
@@ -52,22 +52,20 @@ contract AuthTest is Test, DSAuthUser {
         assertTrue(v.breached(), "owner failed to call");
     }
     function testTransferToAcceptAuthority() {
-        v.updateAuthority( AA, DSAuthModes.Authority );
+        v.setAuthority( AA );
+        v.setOwner(address(0));
         v.breach();
         assertTrue( v.breached(), "authority failed to accept");
     }
 
     function testErrorNonOwnerCantBreach() {
-        v.updateAuthority( DSAuthority(0x0), DSAuthModes.Owner );
+        v.setAuthority( DSAuthority(0x0) );
+        v.setOwner(0);
         v.breach();
     }
     function testErrorTransferToRejectAuthority() {
-        v.updateAuthority( RA, DSAuthModes.Authority );
-        v.breach();
-    }
-    // This test was used to confirm we need an explicit auth mode argument
-    function testErrorTransferToNullAuthority() {
-        v.updateAuthority( DSAuthority(address(bytes32(0x3))), DSAuthModes.Owner );
+        v.setAuthority( RA );
+        v.setOwner(0);
         v.breach();
     }
 }
