@@ -1,63 +1,54 @@
+/*
+   Copyright 2016 Nexus Development
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+
 pragma solidity ^0.4.2;
 
 // import this as "auth.sol" and use "DSAuth"
-import 'enum.sol';
 import 'events.sol';
 import 'authority.sol';
 
-// `DSAuthorized` is a mixin contract which enables standard authorization patterns.
-// It has a shorter alias `auth/auth.sol: DSAuth` because it is so common.
-contract DSAuthorized is DSAuthModesEnum, DSAuthorizedEvents
-{
-    // There are two "modes":
-    // * "owner mode", where `auth()` simply checks if the sender is `_authority`.
-    //   This is the default mode, when `_auth_mode` is false.
-    // * "authority mode", where `auth()` makes a call to
-    // `DSAuthority(_authority).canCall(sender, this, sig)` to ask if the
-    // call should be allowed.
-    DSAuthModes  public _auth_mode;
-    DSAuthority  public _authority;
+contract DSAuth {
+    address      public  owner;
+    DSAuthority  public  authority;
 
-    function DSAuthorized() {
-        _authority = DSAuthority(msg.sender);
-        _auth_mode = DSAuthModes.Owner;
-        DSAuthUpdate( msg.sender, DSAuthModes.Owner );
+    function DSAuth() {
+        owner = msg.sender;
     }
 
-    // Attach the `auth()` modifier to functions to protect them.
-    modifier auth() {
-        if( isAuthorized() ) {
-            _;
+    function setOwner(address newOwner) auth {
+        owner = newOwner;
+    }
+
+    function setAuthority(DSAuthority newAuthority) auth {
+        authority = newAuthority;
+    }
+
+    modifier auth {
+        if (!isAuthorized()) throw;
+        _
+    }
+
+    function isAuthorized() internal returns (bool) {
+        if (msg.sender == owner) {
+            return true;
+        } else if (authority == 0) {
+            return false;
         } else {
-            throw;
+            return authority.canCall(msg.sender, this, msg.sig);
         }
-    }
-    // A version of `auth()` which implicitly returns garbage instead of throwing.
-    modifier try_auth() {
-        if( isAuthorized() ) {
-            _;
-        }
-    }
-
-    // An internal helper function for if you want to use the `auth()` logic
-    // someplace other than the modifier (like in a fallback function).
-    function isAuthorized() internal returns (bool is_authorized) {
-        if( _auth_mode == DSAuthModes.Owner ) {
-            return msg.sender == address(_authority);
-        }
-        if( _auth_mode == DSAuthModes.Authority ) { // use `canCall` in "authority" mode
-            return _authority.canCall( msg.sender, address(this), msg.sig );
-        }
-        throw;
-    }
-
-    // This function is used to both transfer the authority and update the mode.
-    // Be extra careful about setting *both* correctly every time.
-    function updateAuthority( address new_authority, DSAuthModes mode )
-             auth()
-    {
-        _authority = DSAuthority(new_authority);
-        _auth_mode = mode;
-        DSAuthUpdate( new_authority, mode );
     }
 }
