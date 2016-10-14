@@ -21,20 +21,23 @@ pragma solidity ^0.4.2;
 import 'events.sol';
 import 'authority.sol';
 
-contract DSAuthorized {
+contract DSAuthorized is DSAuthEvents {
     address      public  owner;
     DSAuthority  public  authority;
 
-    function DSAuth() {
+    function DSAuthorized() {
         owner = msg.sender;
+        DSOwnerUpdate(owner);
     }
 
     function setOwner(address newOwner) auth {
         owner = newOwner;
+        DSOwnerUpdate(owner);
     }
 
     function setAuthority(DSAuthority newAuthority) auth {
         authority = newAuthority;
+        DSAuthorityUpdate(authority);
     }
 
     modifier auth {

@@ -22,16 +22,7 @@ import 'auth.sol';
 
 
 contract DSAuthorizedUser is DSAuthorized {
-    modifier try_auth() {
-        if( isAuthorized() ) {
-            _;
-        }
-    }
     function triggerAuth() auth() returns (bool) {
-        return true;
-    }
-
-    function triggerTryAuth() try_auth() returns (bool) {
         return true;
     }
 }
@@ -39,10 +30,6 @@ contract DSAuthorizedUser is DSAuthorized {
 contract DSAuthorizedTester is Tester {
     function doTriggerAuth() returns (bool) {
         return DSAuthorizedUser(_t).triggerAuth();
-    }
-
-    function doTriggerTryAuth() returns (bool) {
-        return DSAuthorizedUser(_t).triggerTryAuth();
     }
 }
 
@@ -72,14 +59,6 @@ contract DSAuthorizedTest is Test, DSAuthEvents {
         tester.doTriggerAuth();
     }
 
-    function testOwnedTryAuth() {
-        assertTrue(auth.triggerTryAuth());
-    }
-
-    function testOwnedTryAuthUnauthorized() {
-        assertFalse(tester.doTriggerTryAuth());
-    }
-
     function testUpdateAuthorityEvent() {
         var accepter = new AcceptingAuthority();
 
@@ -103,17 +82,4 @@ contract DSAuthorizedTest is Test, DSAuthEvents {
         tester.doTriggerAuth();
     }
 
-    function testAuthorityTryAuth() {
-        var accepter = new AcceptingAuthority();
-        auth.setAuthority(accepter);
-
-        assertTrue(auth.triggerTryAuth());
-    }
-
-    function testAuthorityTryAuthUnauthorized() {
-        var rejecter = new RejectingAuthority();
-        auth.setAuthority(rejecter);
-
-        assertFalse(tester.doTriggerTryAuth());
-    }
 }
