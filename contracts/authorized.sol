@@ -39,7 +39,7 @@ contract DSAuth {
 
     modifier auth {
         if (!isAuthorized()) throw;
-        _
+        _;
     }
 
     function isAuthorized() internal returns (bool) {
