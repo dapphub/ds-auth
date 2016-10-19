@@ -1,8 +1,0 @@
-name: ds-auth
-version: 0.2.0
-tags: []
-layout:
-  sol_sources: contracts
-  build_dir: build
-dependencies: {}
-ignore: []

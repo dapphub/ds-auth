@@ -1,0 +1,14 @@
+name: ds-auth
+version: 0.2.0
+tags: []
+layout:
+  sol_sources: src
+  build_dir: build
+  packages_directory: .dapple/packages
+dependencies: {}
+ignore: []
+dapple_version: 0.8.9
+environments:
+  develop:
+    objects: {}
+    type: internal
