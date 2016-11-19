@@ -95,6 +95,10 @@ contract DSAuthority50 is DSAuthority50Events,
     ) auth {
         setCanCall(caller, callee, sighash, false, "");
     }
+
+    function release(DSAuth30 object, address owner) auth {
+        object.setOwner(owner);
+    }
 }
 
 contract DSAuthority50Factory {
