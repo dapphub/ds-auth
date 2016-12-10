@@ -1,6 +1,5 @@
-name:         ds-auth
-version:      0
+name:      ds-auth
+version:   0
 layout:
-  sol_sources:          src
-  build_dir:            .dapple/build
-  packages_directory:   .dapple/packages
+  build_dir:     build
+  sol_sources:   src
