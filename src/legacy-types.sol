@@ -1,4 +1,4 @@
-// Legacy types for old `DSAuth` systems
+// Legacy types for some old `DSAuth` systems
 
 pragma solidity ^0.4.4; // compiler bugs
 
