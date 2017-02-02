@@ -24,6 +24,16 @@ contract FakeVault is DSAuth30 {
     function access() auth {}
 }
 
+contract BooleanAuthority is DSAuthority {
+    bool value;
+    function BooleanAuthority(bool _value) { value = _value; }
+    function canCall(
+        address caller, address code, bytes4 sig
+    ) constant returns (bool) {
+        return value;
+    }
+}
+
 contract DSAuthTest is Test, DSAuthEvents {
     FakeVault vault = new FakeVault();
 

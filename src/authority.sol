@@ -17,6 +17,10 @@
 
 pragma solidity ^0.4.9;
 
+contract DSIAuth {
+    function setAuthority(DSAuthority newAuthority);
+}
+
 // `DSAuthority` is the interface which `DSAuth`-derived objects expect
 // their authority to be when it is defined.
 contract DSAuthority {
@@ -28,15 +32,7 @@ contract DSAuthority {
                     , bytes4 sig )
              constant
              returns (bool);
+
+    function release(DSIAuth what);
 }
 
-
-contract BooleanAuthority is DSAuthority {
-    bool value;
-    function BooleanAuthority(bool _value) { value = _value; }
-    function canCall(
-        address caller, address code, bytes4 sig
-    ) constant returns (bool) {
-        return value;
-    }
-}

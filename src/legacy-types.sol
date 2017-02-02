@@ -26,6 +26,7 @@ contract DSAuthModes957 {
     }
 }
 
+// Take care with old authority semantics
 contract DSAuth957 is DSAuthModes957 {
     function updateAuthority(address authority, DSAuthModes mode);
 }

@@ -19,21 +19,16 @@ pragma solidity ^0.4.9;
 import 'authority.sol';
 import 'events.sol';
 
-contract DSAuth is DSAuthEvents {
-    address      public  owner;
+contract DSAuth is DSIAuth, DSAuthEvents {
     DSAuthority  public  authority;
 
     function DSAuth() {
-        owner = msg.sender;
-        LogSetOwner(owner);
+        this.setAuthority(msg.sender);
     }
 
-    function setOwner(address newOwner) auth {
-        owner = newOwner;
-        LogSetOwner(owner);
-    }
-
-    function setAuthority(DSAuthority newAuthority) auth {
+    function setAuthority(DSAuthority newAuthority)
+        auth
+    {
         authority = newAuthority;
         LogSetAuthority(authority);
     }
@@ -44,11 +39,8 @@ contract DSAuth is DSAuthEvents {
     }
 
     function isAuthorized() internal returns (bool) {
-        if (caller == address(this) // TODO examine before publishing !!
-           || msg.sender == owner) {
+        if ( msg.sender == authority || msg.sender == this ) {
             return true;
-        } else if (address(authority) == (0)) {
-            return false;
         } else {
             return authority.canCall(msg.sender, this, msg.sig);
         }
