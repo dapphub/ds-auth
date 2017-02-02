@@ -17,7 +17,6 @@
 pragma solidity ^0.4.9;
 
 contract DSAuthEvents {
-    event LogDSAuthTransfer(
-        address indexed owner, address indexed authority
-    );
+    event LogSetOwner     (address indexed owner);
+    event LogSetAuthority (address indexed authority);
 }

@@ -15,15 +15,14 @@
 */
 
 
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.9;
 
 import 'auth.sol';
 
 contract DSBasicAuthorityEvents {
-    event DSSetCanCall( address caller_address
-                      , address code_address
-                      , bytes4 sig
-                      , bool can );
+    event LogToggle( address indexed caller, address indexed code, bytes4 indexed sig, bool canCall );
+    event LogPermit( address indexed caller, address indexed code, bytes4 indexed sig );
+    event LogForbid( address indexed caller, address indexed code, bytes4 indexed sig );
 }
 
 // A `DSAuthority` which contains a whitelist map from can_call arguments to return value.
@@ -32,7 +31,49 @@ contract DSBasicAuthority is DSAuthority
                            , DSBasicAuthorityEvents
                            , DSAuth
 {
-    mapping(address=>mapping(address=>mapping(bytes4=>bool))) _can_call;
+    mapping(address=>mapping(address=>mapping(bytes4=>bool))) _canCall;
+
+
+    function permit( address  caller
+                   , address  code
+                   , string   sig )
+        auth
+    {
+        permit(caller, code, bytes4(sha3(sig)));
+    }
+
+    function forbid( address  caller
+                   , address  code
+                   , string   sig )
+        auth
+    {
+        forbid(caller, code, bytes4(sha3(sig)));
+    }
+
+    function permit( address  caller
+                   , address  code
+                   , bytes4   sighash )
+        auth
+    {
+        _canCall[caller][code][sighash] = true;
+        LogPermit(caller, code, sighash);
+    }
+
+    function forbid( address  caller
+                   , address  code
+                   , bytes4   sighash )
+        auth
+    {
+        _canCall[caller][code][sighash] = false;
+        LogForbid(
+    }
+
+    function release(DSAuth object, address newOwner)
+        auth
+    {
+        object.setOwner(owner);
+    }
+
 
     // See `DSAuthority.sol`
     function canCall( address caller_address
@@ -41,28 +82,28 @@ contract DSBasicAuthority is DSAuthority
              constant
              returns (bool)
     {
-        return _can_call[caller_address][code_address][sig];
+        return _canCall[caller_address][code_address][sig];
     }
 
     function setCanCall( address caller_address
                        , address code_address
                        , bytes4 sig
                        , bool can )
-             auth()
+        internal
     {
-        _can_call[caller_address][code_address][sig] = can;
-        DSSetCanCall( caller_address, code_address, sig, can );
+        _canCall[caller_address][code_address][sig] = can;
+        LogSetCanCall( caller_address, code_address, sig, can );
     }
 
     function setCanCall( address caller_address
                        , address code_address
                        , string signature
                        , bool can )
-             auth()
+        internal
     {
         var sig = bytes4(sha3(signature));
-        _can_call[caller_address][code_address][sig] = can;
-        DSSetCanCall( caller_address, code_address, sig, can );
+        _canCall[caller_address][code_address][sig] = can;
+        LogSetCanCall( caller_address, code_address, sig, can );
     }
 
 }

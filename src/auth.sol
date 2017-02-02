@@ -25,17 +25,17 @@ contract DSAuth is DSAuthEvents {
 
     function DSAuth() {
         owner = msg.sender;
-        LogDSAuthTransfer(owner, authority);
+        LogSetOwner(owner);
     }
 
     function setOwner(address newOwner) auth {
         owner = newOwner;
-        LogDSAuthTransfer(owner, authority);
+        LogSetOwner(owner);
     }
 
     function setAuthority(DSAuthority newAuthority) auth {
         authority = newAuthority;
-        LogDSAuthTransfer(owner, authority);
+        LogSetAuthority(authority);
     }
 
     modifier auth {
@@ -44,7 +44,8 @@ contract DSAuth is DSAuthEvents {
     }
 
     function isAuthorized() internal returns (bool) {
-        if (msg.sender == owner) {
+        if (caller == address(this) // TODO examine before publishing !!
+           || msg.sender == owner) {
             return true;
         } else if (address(authority) == (0)) {
             return false;
