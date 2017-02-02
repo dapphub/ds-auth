@@ -75,3 +75,52 @@ contract BasicAuthorityTest is Test, DSAuthEvents, DSBasicAuthorityEvents {
         v.breach();
     }
 }
+
+contract FakeVault is DSAuth30 {
+    function access() auth {}
+}
+
+contract DSAuthorityTest is Test, DSAuthorityEvents {
+    DSAuthority50  authority  = new DSAuthority50();
+    FakeVault      vault      = new FakeVault();
+
+    function setUp() {
+        vault.setAuthority(authority);
+        vault.setOwner(address(0));
+    }
+
+    function testFail_unauthorized() {
+        vault.access();
+    }
+
+    function testFail_permit() {
+        authority.permit(this, vault, "access()");
+        vault.setOwner(address(0));
+    }
+
+    function test_permit() {
+        expectEventsExact(authority);
+        LogSetCanCall(this, vault, sighash("access()"), true, "access()");
+        authority.permit(this, vault, "access()");
+        vault.access();
+    }
+
+    function testFail_forbid() {
+        authority.permit(this, vault, "access()");
+        authority.forbid(this, vault, "access()");
+        vault.access();
+    }
+
+    function test_forbid() {
+        expectEventsExact(authority);
+        LogSetCanCall(this, vault, sighash("access()"), true, "access()");
+        authority.permit(this, vault, "access()");
+        LogSetCanCall(this, vault, sighash("foo()"), false, "foo()");
+        authority.forbid(this, vault, "foo()");
+        vault.access();
+    }
+
+    function sighash(string sig) internal returns (bytes4) {
+        return bytes4(sha3(sig));
+    }
+}
