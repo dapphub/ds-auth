@@ -25,7 +25,7 @@ contract FakeVault is DSAuth30 {
     function access() auth {}
 }
 
-contract DSAuthority50Test is Test, DSAuthority50Events {
+contract DSAuthorityTest is Test, DSAuthorityEvents {
     DSAuthority50  authority  = new DSAuthority50();
     FakeVault      vault      = new FakeVault();
 

@@ -1,5 +1,5 @@
 /*
-   Copyright 2016 Nexus Development
+   Copyright 2017 Nexus Development, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,9 +14,10 @@
    limitations under the License.
 */
 
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.9;
 
 contract DSAuthEvents {
-    event DSOwnerUpdate( address indexed owner );
-    event DSAuthorityUpdate( address indexed authority );
+    event LogDSAuthTransfer(
+        address indexed owner, address indexed authority
+    );
 }

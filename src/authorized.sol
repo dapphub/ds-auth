@@ -15,7 +15,7 @@
 */
 
 
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.9;
 
 // import this as "auth.sol" and use "DSAuth"
 import 'events.sol';

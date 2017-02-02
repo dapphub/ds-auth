@@ -15,13 +15,13 @@
 */
 
 
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.9;
 
-// `DSAuthority` is the interface which `DSAuthorized` (`DSAuth`) contracts expect
-// their authority to be when they are in the remote auth mode.
+// `DSAuthority` is the interface which `DSAuth`-derived objects expect
+// their authority to be when it is defined.
 contract DSAuthority {
     // `canCall` will be called with these arguments in the caller's
-    // scope if it is coming from an `auth()` call:
+    // scope if it is coming from an `auth` check (`isAuthorized` internal function):
     // `DSAuthority(_ds_authority).canCall(msg.sender, address(this), msg.sig);`
     function canCall( address caller
                     , address code
@@ -30,26 +30,13 @@ contract DSAuthority {
              returns (bool);
 }
 
-contract AcceptingAuthority is DSAuthority {
-    function canCall( address caller
-                    , address code
-                    , bytes4 sig )
-             constant
-             returns (bool)
-    {
-        return true;
+
+contract BooleanAuthority is DSAuthority {
+    bool value;
+    function BooleanAuthority(bool _value) { value = _value; }
+    function canCall(
+        address caller, address code, bytes4 sig
+    ) constant returns (bool) {
+        return value;
     }
 }
-
-contract RejectingAuthority is DSAuthority {
-    function canCall( address caller
-                    , address callee
-                    , bytes4 sig )
-             constant
-             returns (bool)
-    {
-        return false;
-    }
-}
-
-

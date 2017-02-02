@@ -1,5 +1,5 @@
 /*
-   Copyright 2016 Nexus Development
+   Copyright 2017 Nexus Development, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,10 +14,42 @@
    limitations under the License.
 */
 
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.9;
 
 import 'authority.sol';
-import 'authorized.sol';
 import 'events.sol';
 
-contract DSAuth is DSAuthorized {} //, is DSAuthEvents
+contract DSAuth is DSAuthEvents {
+    address      public  owner;
+    DSAuthority  public  authority;
+
+    function DSAuth() {
+        owner = msg.sender;
+        LogDSAuthTransfer(owner, authority);
+    }
+
+    function setOwner(address newOwner) auth {
+        owner = newOwner;
+        LogDSAuthTransfer(owner, authority);
+    }
+
+    function setAuthority(DSAuthority newAuthority) auth {
+        authority = newAuthority;
+        LogDSAuthTransfer(owner, authority);
+    }
+
+    modifier auth {
+        if (!isAuthorized()) throw;
+        _;
+    }
+
+    function isAuthorized() internal returns (bool) {
+        if (msg.sender == owner) {
+            return true;
+        } else if (address(authority) == (0)) {
+            return false;
+        } else {
+            return authority.canCall(msg.sender, this, msg.sig);
+        }
+    }
+}
