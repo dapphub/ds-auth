@@ -1,20 +1,32 @@
 ds-auth
 ===
 
+
 The `auth` module contains contract for the access control pattern used in several places throughout dappsys.
 
-Think of `DSAuthorized` (alias: `DSAuth`) as analagous to `owned` and  the `auth` modifier as analagous to `owner_only`, except that
-when the a `DSAuth` contract also has an `authority` set (with interface `DSAuthority`), the protected function works as if you had this line:
+`DSAuth` is like `owned`, except it performs a separate permission lookup if the initial owner check fails.
 
-`assert(_authority.canCall(msg.sender, this, msg.sig));`
+In other words, the `auth` modifier behaves roughly as:
 
-`canCall` definition on `DSAuthority`:
+`assert(msg.sender == _authority || _authority.canCall(msg.sender, this, msg.sig));`
+
+The `canCall` interface is defined on `DSAuthority`:
 
 ```
 contract DSAuthority {
-    function canCall(address caller, address callee, bytes4 sig) returns (bool);
+    function canCall(address caller, address code, bytes4 sig) returns (bool);
 }
 ```
 
-The `DSBasicAuthority` implements an authority that rejects by default and has a `(caller,callee,sig) => bool` whitelist.
-Another example authority might be a `WhitelistAuthority`, which only cares about the `caller` argument.
+This gives fine-grained access control to contracts grouped together.
+
+
+Testing
+---
+
+Tests can be run with [`dapple-quicktest`](https://github.com/nexusdev/dapple-quicktest).
+
+
+The `DSBasicAuthority` implements an authority that rejects by default and has a `(caller,callee,sig) => bool` mapping.
+
+Two examples of more complex authorities live in [ds-whitelist](https://github.com/nexusdev/ds-whitelist) (which only discriminates by caller) and [ds-roles](https://github.com/nexusdev/ds-roles) (basic RBAC).

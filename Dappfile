@@ -1,5 +1,16 @@
-name:      ds-auth
-version:   0
+name: ds-auth
+version: 0
 layout:
-  build_dir:     build
-  sol_sources:   src
+  build_dir: ./build
+  sol_sources: ./src
+description: ''
+authors: []
+license: Apache-2.0
+keywords:
+  - dapple
+dapple_version: 0.8.41
+environments:
+  develop:
+    objects: {}
+    type: internal
+    chain: ''
