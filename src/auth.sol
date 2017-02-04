@@ -41,10 +41,9 @@ contract DSAuth is DSIAuth, DSAuthEvents {
 
     function isAuthorized() internal returns (bool)
     {
-        if ( msg.sender == address(authority) )
-        {
+        if ( address(authority) == msg.sender ) {
             return true;
-        } else if ( authority == address(0) ) {
+        } else if ( address(authority) == 0 ) {
             return false;
         } else {
             return authority.canCall(msg.sender, this, msg.sig);
