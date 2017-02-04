@@ -44,6 +44,8 @@ contract DSAuth is DSIAuth, DSAuthEvents {
           || msg.sender == address(this) )
         {
             return true;
+        } else if ( authority == address(0) ) {
+            return false;
         } else {
             return authority.canCall(msg.sender, this, msg.sig);
         }

@@ -37,6 +37,7 @@ contract BooleanAuthority is DSAuthority {
 
 contract DSAuthTest is Test, DSAuthEvents {
     FakeVault vault = new FakeVault();
+    BooleanAuthority rejector = new BooleanAuthority(false);
 
     function test_owner() {
         expectEventsExact(vault);
@@ -55,17 +56,9 @@ contract DSAuthTest is Test, DSAuthEvents {
         vault.setAuthority(DSAuthority(0));
     }
 
-    function testFail_non_owner_3() {
-        vault.setAuthority(DSAuthority(0));
-        vault.setAuthority(DSIAuthority(0));
-    }
-
     function test_accepting_authority() {    
         vault.setAuthority(new BooleanAuthority(true));
-        vault.setAuthority(DSAuthority(0));
         vault.access();
-        vault.setAuthority(DSAuthority(0));
-        vault.setAuthority(DSAuthority(0));
     }
 
     function testFail_rejecting_authority_1() {
