@@ -17,13 +17,13 @@
 
 pragma solidity ^0.4.9;
 
-contract DSIAuth {
-    function setAuthority(DSAuthority newAuthority);
-}
+import 'types.sol';
+import 'auth.sol';
 
 // `DSAuthority` is the interface which `DSAuth`-derived objects expect
 // their authority to be when it is defined.
-contract DSAuthority {
+contract DSAuthority is DSIAuthority
+                      , DSAuth {
     // `canCall` will be called with these arguments in the caller's
     // scope if it is coming from an `auth` check (`isAuthorized` internal function):
     // `DSAuthority(_ds_authority).canCall(msg.sender, address(this), msg.sig);`
@@ -31,8 +31,15 @@ contract DSAuthority {
                     , address code
                     , bytes4 sig )
              constant
-             returns (bool);
+             returns (bool)
+    {
+        return false;
+    }
 
-    function release(DSIAuth what);
+    function release(DSIAuth what)
+        auth
+    {
+        what.setAuthority(DSIAuthority(msg.sender));
+    }
 }
 

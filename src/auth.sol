@@ -16,17 +16,17 @@
 
 pragma solidity ^0.4.9;
 
-import 'authority.sol';
+import 'types.sol';
 import 'events.sol';
 
 contract DSAuth is DSIAuth, DSAuthEvents {
-    DSAuthority  public  authority;
+    DSIAuthority  public  authority;
 
     function DSAuth() {
-        this.setAuthority(msg.sender);
+        this.setAuthority(DSIAuthority(msg.sender));
     }
 
-    function setAuthority(DSAuthority newAuthority)
+    function setAuthority(DSIAuthority newAuthority)
         auth
     {
         authority = newAuthority;
@@ -38,8 +38,11 @@ contract DSAuth is DSIAuth, DSAuthEvents {
         _;
     }
 
-    function isAuthorized() internal returns (bool) {
-        if ( msg.sender == authority || msg.sender == this ) {
+    function isAuthorized() internal returns (bool)
+    {
+        if ( msg.sender == address(authority)
+          || msg.sender == address(this) )
+        {
             return true;
         } else {
             return authority.canCall(msg.sender, this, msg.sig);
