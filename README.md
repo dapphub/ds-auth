@@ -6,12 +6,25 @@ The `auth` module contains contracts for the access control pattern used in seve
 
 `DSAuth` is like `owned`, except it performs a separate permission lookup if the initial owner check fails.
 
-In other words, the `auth` modifier behaves roughly as:
+The critical functionality is summarized by this section of `DSAuth`:
+```
+    modifier auth {
+        if (!isAuthorized()) throw;
+        _;
+    }
 
-`assert( msg.sender == _authority
-      || msg.sender == this
-      || _authority.canCall(msg.sender, this, msg.sig) 
-       );`
+    function isAuthorized() internal returns (bool)
+    {
+        if ( address(authority) == msg.sender ) {
+            return true;
+        } else if ( address(authority) == 0 ) {
+            return false;
+        } else {
+            return authority.canCall(msg.sender, this, msg.sig);
+        }
+    }
+
+```
 
 The `canCall` interface is defined on `DSIAuthority`:
 
