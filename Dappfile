@@ -1,5 +1,5 @@
 name: ds-auth
-version: 0
+version: 0.0.1
 layout:
   build_dir: ./build
   sol_sources: ./src
@@ -7,7 +7,9 @@ description: ''
 authors: []
 license: Apache-2.0
 keywords:
-  - dapple
+  - dappsys
+  - authentication
+  - auth
 dapple_version: 0.8.41
 environments:
   develop:
