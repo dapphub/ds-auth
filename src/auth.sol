@@ -23,7 +23,8 @@ contract DSAuth is DSIAuth, DSAuthEvents {
     DSIAuthority  public  authority;
 
     function DSAuth() {
-        this.setAuthority(DSIAuthority(msg.sender));
+        authority = DSIAuthority(msg.sender);
+        LogSetAuthority(authority);
     }
 
     function setAuthority(DSIAuthority newAuthority)
@@ -40,8 +41,7 @@ contract DSAuth is DSIAuth, DSAuthEvents {
 
     function isAuthorized() internal returns (bool)
     {
-        if ( msg.sender == address(authority)
-          || msg.sender == address(this) )
+        if ( msg.sender == address(authority) )
         {
             return true;
         } else if ( authority == address(0) ) {
