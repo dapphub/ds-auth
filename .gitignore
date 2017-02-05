@@ -1,4 +1,4 @@
 **/chain_db/
 /.dapple
 /build
-**/chain_db/
+**/chain_db/**/chain_db/

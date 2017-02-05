@@ -10,7 +10,7 @@ keywords:
   - dappsys
   - authentication
   - auth
-dapple_version: 0.8.41
+dapple_version: 0.8.43
 environments:
   develop:
     objects: {}

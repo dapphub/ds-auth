@@ -14,9 +14,8 @@
    limitations under the License.
 */
 
-pragma solidity ^0.4.9;
+pragma solidity ^0.4.8;
 
 contract DSAuthEvents {
-    event LogSetOwner     (address indexed owner);
     event LogSetAuthority (address indexed authority);
 }
