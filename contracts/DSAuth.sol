@@ -64,6 +64,9 @@ contract DSAuth is DSIAuth, DSAuthEvents {
         } else if ( address(authority) == 0 ) {
             return false;
         } else {
+            // WARNING, this must throw if calling empty code. This is only works
+            // as of a recent compiler version. This is not clearly defined in 
+            // Solidity semantics so this behavior must have a dedicated test.
             return authority.canCall(msg.sender, this, msg.sig);
         }
     }
