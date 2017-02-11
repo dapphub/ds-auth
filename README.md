@@ -2,9 +2,7 @@ ds-auth
 ===
 
 
-The `auth` module contains contracts for the access control pattern used in several places throughout dappsys.
-
-`DSAuth` is like `owned`, except it performs a separate permission lookup if the initial owner check fails.
+`auth` is an access control pattern for Ethereum contract systems.
 
 The critical functionality is summarized by this section of `DSAuth`:
 ```
