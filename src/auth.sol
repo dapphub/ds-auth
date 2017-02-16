@@ -16,7 +16,9 @@
 
 pragma solidity ^0.4.8;
 
-import './DSAuthEvents.sol';
+contract DSAuthEvents {
+    event LogSetAuthority (address indexed authority);
+}
 
 contract DSIAuth {
     function setAuthority(DSIAuthority newAuthority);
@@ -71,3 +73,28 @@ contract DSAuth is DSIAuth, DSAuthEvents {
         }
     }
 }
+
+// An DSIAuthority implementation with standard `release`. 
+// TODO possible leave canCall undefined?
+contract DSAuthority is DSIAuthority
+                      , DSAuth
+{
+    // `canCall` will be called with these arguments in the caller's
+    // scope if it is coming from an `auth` check (`isAuthorized` internal function):
+    // `DSAuthority(_ds_authority).canCall(msg.sender, address(this), msg.sig);`
+    function canCall( address caller
+                    , address code
+                    , bytes4 sig )
+             constant
+             returns (bool)
+    {
+        return false;
+    }
+
+    function release(DSIAuth what)
+        auth
+    {
+        what.setAuthority(DSIAuthority(msg.sender));
+    }
+}
+
