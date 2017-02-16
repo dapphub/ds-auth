@@ -1,18 +1,6 @@
-name: ds-auth
-version: 0.0.1
-layout:
-  build_dir: ./build
-  sol_sources: ./src
-description: ''
-authors: []
-license: Apache-2.0
-keywords:
-  - dappsys
-  - authentication
-  - auth
-dapple_version: 0.8.43
-environments:
-  develop:
-    objects: {}
-    type: internal
-    chain: ''
+name            ds-auth
+description
+version         0.0.1
+
+author          nikolai
+license         Apache-2.0
