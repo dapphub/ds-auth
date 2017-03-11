@@ -1,45 +1,27 @@
-/*
-   Copyright 2016-2017 Nexus Development, LLC
+/// auth.sol -- widely-used access control pattern for Ethereum
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+// Copyright (C) 2015, 2016, 2017  Nexus Development, LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
+// Licensed under the Apache License, Version 2.0 (the "License").
+// You may not use this file except in compliance with the License.
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
 
 pragma solidity ^0.4.8;
 
-contract DSAuthEvents {
-    event LogSetAuthority (address indexed authority);
-}
-
-contract DSIAuth {
-    function setAuthority(DSIAuthority newAuthority);
-}
-
-// `DSAuthority` is the interface which `DSAuth`-derived objects expect
-// their authority to be when it is defined.
 contract DSIAuthority {
-    // `canCall` will be called with these arguments in the caller's
-    // scope if it is coming from an `auth` check (`isAuthorized` internal function):
-    // `DSAuthority(_ds_authority).canCall(msg.sender, address(this), msg.sig);`
-    function canCall( address caller
-                    , address code
-                    , bytes4 sig )
-             constant
-             returns (bool);
-
-    function release(DSIAuth what);
+    function canCall(
+        address src, address dst, bytes4 sig
+    ) constant returns (bool);
 }
 
-contract DSAuth is DSIAuth, DSAuthEvents {
+contract DSAuthEvents {
+    event LogSetAuthority(address indexed authority);
+}
+
+contract DSAuth is DSAuthEvents {
     DSIAuthority  public  authority;
 
     function DSAuth() {
@@ -47,54 +29,41 @@ contract DSAuth is DSIAuth, DSAuthEvents {
         LogSetAuthority(authority);
     }
 
-    function setAuthority(DSIAuthority newAuthority)
+    function setAuthority(address authority_)
         auth
     {
-        authority = newAuthority;
+        authority = DSIAuthority(authority_);
         LogSetAuthority(authority);
     }
 
     modifier auth {
-        if (!isAuthorized()) throw;
+        assert(isAuthorized(msg.sender, msg.sig));
         _;
     }
 
-    function isAuthorized() internal returns (bool)
-    {
-        if ( address(authority) == msg.sender ) {
+    modifier auth_as(string sig) {
+        assert(isAuthorized(msg.sender, bytes4(sha3(sig))));
+        _;
+    }
+
+    function isAuthorized(address src, bytes4 sig) internal returns (bool) {
+        if (src == address(authority)) {
             return true;
-        } else if ( address(authority) == 0 ) {
-            return false;
         } else {
-            // WARNING, this must throw if calling empty code. This is only works
-            // as of a recent compiler version. This is not clearly defined in 
-            // Solidity semantics so this behavior must have a dedicated test.
-            return authority.canCall(msg.sender, this, msg.sig);
+            // WARNING:
+            //
+            // This must throw if `authority' points to either (1) zero,
+            // or (2) an address which has no code attached to it.
+            //
+            // This is not clearly defined in the semantics of Solidity
+            // and only works as of a recent compiler version, so this
+            // behavior must be tested explicitly.
+            //
+            return authority.canCall(src, this, sig);
         }
     }
-}
 
-// An DSIAuthority implementation with standard `release`. 
-// TODO possible leave canCall undefined?
-contract DSAuthority is DSIAuthority
-                      , DSAuth
-{
-    // `canCall` will be called with these arguments in the caller's
-    // scope if it is coming from an `auth` check (`isAuthorized` internal function):
-    // `DSAuthority(_ds_authority).canCall(msg.sender, address(this), msg.sig);`
-    function canCall( address caller
-                    , address code
-                    , bytes4 sig )
-             constant
-             returns (bool)
-    {
-        return false;
-    }
-
-    function release(DSIAuth what)
-        auth
-    {
-        what.setAuthority(DSIAuthority(msg.sender));
+    function assert(bool x) {
+        if (!x) throw;
     }
 }
-

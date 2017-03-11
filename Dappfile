@@ -1,6 +1,6 @@
 name            ds-auth
-description     Basic authorization framework
-version         K99
+description     Simple access control pattern
+version         K75
 
 author          Nikolai Mushegian <nikolai@nexusdev.us>
 author          Daniel Brockman <daniel@brockman.se>

@@ -6,20 +6,17 @@ The `DSAuth` mixin is a widely-used Ethereum access control pattern.
 The critical functionality is summarized by this part of the code:
 
     modifier auth {
-        if (!isAuthorized()) throw;
+        assert(isAuthorized(msg.sender, msg.sig));
         _;
     }
 
-    function isAuthorized() internal returns (bool) {
-        if (address(authority) == msg.sender) {
+    function isAuthorized(address src, bytes4 sig) internal returns (bool) {
+        if (src == address(authority)) {
             return true;
-        } else if (address(authority) == 0) {
-            return false;
         } else {
-            return authority.canCall(msg.sender, this, msg.sig);
+            return authority.canCall(src, this, sig);
         }
     }
-
 
 The `canCall` interface is defined on `DSIAuthority`:
 

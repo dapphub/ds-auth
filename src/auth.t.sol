@@ -19,13 +19,17 @@ contract FakeVault is DSAuth {
     function access() auth {}
 }
 
-contract BooleanAuthority is DSAuthority {
-    bool value;
-    function BooleanAuthority(bool _value) { value = _value; }
+contract BooleanAuthority is DSIAuthority {
+    bool yes;
+    
+    function BooleanAuthority(bool _yes) {
+        yes = _yes;
+    }
+    
     function canCall(
-        address caller, address code, bytes4 sig
+        address src, address dst, bytes4 sig
     ) constant returns (bool) {
-        return value;
+        return yes;
     }
 }
 
@@ -36,18 +40,18 @@ contract DSAuthTest is DSTest, DSAuthEvents {
     function test_owner() {
         expectEventsExact(vault);
         vault.access();
-        vault.setAuthority(DSAuthority(0));
-        LogSetAuthority(DSAuthority(0));
+        vault.setAuthority(0);
+        LogSetAuthority(0);
     }
 
     function testFail_non_owner_1() {
-        vault.setAuthority(DSAuthority(0));
+        vault.setAuthority(0);
         vault.access();
     }
 
     function testFail_non_owner_2() {
-        vault.setAuthority(DSAuthority(0));
-        vault.setAuthority(DSAuthority(0));
+        vault.setAuthority(0);
+        vault.setAuthority(0);
     }
 
     function test_accepting_authority() {    
@@ -57,20 +61,14 @@ contract DSAuthTest is DSTest, DSAuthEvents {
 
     function testFail_rejecting_authority_1() {
         vault.setAuthority(new BooleanAuthority(false));
-        vault.setAuthority(DSAuthority(0));
+        vault.setAuthority(0);
         vault.access();
     }
 
     function testFail_rejecting_authority_2() {
         vault.setAuthority(new BooleanAuthority(false));
-        vault.setAuthority(DSAuthority(0));
-        vault.setAuthority(DSAuthority(0));
-    }
-
-    function testFail_rejecting_authority_3() {
-        vault.setAuthority(new BooleanAuthority(false));
-        vault.setAuthority(DSAuthority(0));
-        vault.setAuthority(DSAuthority(0));
+        vault.setAuthority(0);
+        vault.setAuthority(0);
     }
 }
 
