@@ -1,6 +1,7 @@
 name            ds-auth
-description
-version         0.8.9
+description     Basic authorization framework
+version         K99
 
-author          nikolai
+author          Nikolai Mushegian <nikolai@nexusdev.us>
+author          Daniel Brockman <daniel@brockman.se>
 license         Apache-2.0
