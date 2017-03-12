@@ -19,7 +19,7 @@ contract FakeVault is DSAuth {
     function access() auth {}
 }
 
-contract BooleanAuthority is DSIAuthority {
+contract BooleanAuthority is DSAuthority {
     bool yes;
     
     function BooleanAuthority(bool _yes) {

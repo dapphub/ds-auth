@@ -11,28 +11,30 @@
 
 pragma solidity ^0.4.8;
 
-contract DSIAuthority {
+contract DSAuthority {
     function canCall(
         address src, address dst, bytes4 sig
     ) constant returns (bool);
 }
+
+contract DSIAuthority is DSAuthority {} // deprecated
 
 contract DSAuthEvents {
     event LogSetAuthority(address indexed authority);
 }
 
 contract DSAuth is DSAuthEvents {
-    DSIAuthority  public  authority;
+    DSAuthority  public  authority;
 
     function DSAuth() {
-        authority = DSIAuthority(msg.sender);
+        authority = DSAuthority(msg.sender);
         LogSetAuthority(authority);
     }
 
     function setAuthority(address authority_)
         auth
     {
-        authority = DSIAuthority(authority_);
+        authority = DSAuthority(authority_);
         LogSetAuthority(authority);
     }
 
