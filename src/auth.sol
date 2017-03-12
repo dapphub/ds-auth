@@ -65,7 +65,7 @@ contract DSAuth is DSAuthEvents {
         }
     }
 
-    function assert(bool x) {
+    function assert(bool x) internal {
         if (!x) throw;
     }
 }
