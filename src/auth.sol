@@ -43,7 +43,7 @@ contract DSAuth is DSAuthEvents {
         _;
     }
 
-    modifier auth_as(string sig) {
+    modifier authorized(string sig) {
         assert(isAuthorized(msg.sender, bytes4(sha3(sig))));
         _;
     }
