@@ -40,35 +40,36 @@ contract DSAuthTest is DSTest, DSAuthEvents {
     function test_owner() {
         expectEventsExact(vault);
         vault.access();
-        vault.setAuthority(0);
-        LogSetAuthority(0);
+        vault.setOwner(0);
+        LogSetOwner(0);
     }
 
     function testFail_non_owner_1() {
-        vault.setAuthority(0);
+        vault.setOwner(0);
         vault.access();
     }
 
     function testFail_non_owner_2() {
-        vault.setAuthority(0);
-        vault.setAuthority(0);
+        vault.setOwner(0);
+        vault.setOwner(0);
     }
 
     function test_accepting_authority() {    
         vault.setAuthority(new BooleanAuthority(true));
+        vault.setOwner(0);
         vault.access();
     }
 
     function testFail_rejecting_authority_1() {
         vault.setAuthority(new BooleanAuthority(false));
-        vault.setAuthority(0);
+        vault.setOwner(0);
         vault.access();
     }
 
     function testFail_rejecting_authority_2() {
         vault.setAuthority(new BooleanAuthority(false));
-        vault.setAuthority(0);
-        vault.setAuthority(0);
+        vault.setOwner(0);
+        vault.setOwner(0);
     }
 }
 

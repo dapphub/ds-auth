@@ -17,24 +17,31 @@ contract DSAuthority {
     ) constant returns (bool);
 }
 
-contract DSIAuthority is DSAuthority {} // deprecated
-
 contract DSAuthEvents {
-    event LogSetAuthority(address indexed authority);
+    event LogSetAuthority (address indexed authority);
+    event LogSetOwner     (address indexed owner);
 }
 
 contract DSAuth is DSAuthEvents {
     DSAuthority  public  authority;
+    address      public  owner;
 
     function DSAuth() {
-        authority = DSAuthority(msg.sender);
-        LogSetAuthority(authority);
+        owner = msg.sender;
+        LogSetOwner(msg.sender);
     }
 
-    function setAuthority(address authority_)
+    function setOwner(address owner_)
         auth
     {
-        authority = DSAuthority(authority_);
+        owner = owner_;
+        LogSetOwner(owner);
+    }
+
+    function setAuthority(DSAuthority authority_)
+        auth
+    {
+        authority = authority_;
         LogSetAuthority(authority);
     }
 
@@ -49,18 +56,11 @@ contract DSAuth is DSAuthEvents {
     }
 
     function isAuthorized(address src, bytes4 sig) internal returns (bool) {
-        if (src == address(authority)) {
+        if (src == owner) {
             return true;
+        } else if (authority == DSAuthority(0)) {
+            return false;
         } else {
-            // WARNING:
-            //
-            // This must throw if `authority' points to either (1) zero,
-            // or (2) an address which has no code attached to it.
-            //
-            // This is not clearly defined in the semantics of Solidity
-            // and only works as of a recent compiler version, so this
-            // behavior must be tested explicitly.
-            //
             return authority.canCall(src, this, sig);
         }
     }
