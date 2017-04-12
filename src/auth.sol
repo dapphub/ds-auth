@@ -56,7 +56,9 @@ contract DSAuth is DSAuthEvents {
     }
 
     function isAuthorized(address src, bytes4 sig) internal returns (bool) {
-        if (src == owner) {
+        if (src == address(this)) {
+            return true;
+        } else if (src == owner) {
             return true;
         } else if (authority == DSAuthority(0)) {
             return false;
