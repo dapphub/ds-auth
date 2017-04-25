@@ -3,8 +3,13 @@
 DS-Auth
 #######
 
-.. image:: https://img.shields.io/badge/view%20docs-readthedocs-blue.svg?style=flat-square
-   :target: https://dappsys.readthedocs.io/en/latest/ds_auth.html
+.. |readthedocs| image:: https://img.shields.io/badge/view%20docs-readthedocs-blue.svg?style=flat-square
+   :target: https://dappsys.readthedocs.io/en/latest/ds_auth.html   
+
+.. |chat| image:: https://img.shields.io/badge/community-chat-blue.svg?style=flat-square
+   :target: https://dapphub.chat
+   
+|readthedocs|  |chat|
 
 DS-Auth is the most fundamental building block of the Dappsys framework. It introduces the concept of contract ownership with two types that work together: ``DSAuth`` and ``DSAuthority``. All the contracts in your system that require some level of authorization to access at least one of their functions should inherit from the ``DSAuth`` type. This is because this type introduces a public ``owner`` member of type ``address``, a public ``authority`` member of type ``DSAuthority``, and a function modifier called ``auth``. 
 
