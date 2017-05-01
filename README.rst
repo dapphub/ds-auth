@@ -13,13 +13,17 @@ DS-Auth
 
 DS-Auth is the most fundamental building block of the Dappsys framework. It introduces the concept of contract ownership with two types that work together: ``DSAuth`` and ``DSAuthority``. All the contracts in your system that require some level of authorization to access at least one of their functions should inherit from the ``DSAuth`` type. This is because this type introduces a public ``owner`` member of type ``address``, a public ``authority`` member of type ``DSAuthority``, and a function modifier called ``auth``. 
 
-Any function that is decorated with the ``auth`` modifier will perform an authorization check before granting access to the function. It will first check if the sender is the contract's owner, in which case it will grant access to any ``auth``-controlled function. If that check fails, it will then ask the authority contract if the sender ``canCall`` the function in question:
+Any function that is decorated with the ``auth`` modifier will perform an authorization check before granting access to the function. It will perform these checks in order and grant access if any are true:
+
+* If ``msg.sender`` is the contract itself. This will be the case if a contract makes an external call to one of its own functions (e.g. ``this.foo()``)
+* If ``msg.sender`` is the contract's ``owner``
+* If the contract's ``authority`` member returns ``true`` when making this call:
 
 ::
 
     authority.canCall(msg.sender, this, msg.sig)
 
-The authority will answer ``true`` if the sender is authorized to make the call and ``false`` otherwise. 
+The authority will return ``true`` if ``msg.sender`` is authorized to call the function identified by ``msg.sig`` and ``false`` otherwise.  
 
 This is an extremely powerful design pattern because it creates a separation of concerns between authorization and application business logic. The authority could have any number of complex rules that the application contract doesn't need to worry about. For example the authority could be:
 
