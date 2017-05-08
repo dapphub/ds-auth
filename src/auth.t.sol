@@ -26,8 +26,8 @@ contract BooleanAuthority is DSAuthority {
         yes = _yes;
     }
     
-    function canCall(
-        address src, address dst, bytes4 sig
+    function allowed(
+        address src, address dst, bytes32 sig
     ) constant returns (bool) {
         return yes;
     }

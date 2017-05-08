@@ -12,8 +12,8 @@
 pragma solidity ^0.4.8;
 
 contract DSAuthority {
-    function canCall(
-        address src, address dst, bytes4 sig
+    function allowed(
+        address src, address dst, bytes32 sig
     ) constant returns (bool);
 }
 
@@ -46,16 +46,16 @@ contract DSAuth is DSAuthEvents {
     }
 
     modifier auth {
-        assert(isAuthorized(msg.sender, msg.sig));
+        assert(isAuthorized(msg.sender, bytes32(msg.sig)));
         _;
     }
 
-    modifier authorized(bytes4 sig) {
+    modifier auth_as(bytes32 sig) {
         assert(isAuthorized(msg.sender, sig));
         _;
     }
 
-    function isAuthorized(address src, bytes4 sig) internal returns (bool) {
+    function isAuthorized(address src, bytes32 sig) internal returns (bool) {
         if (src == address(this)) {
             return true;
         } else if (src == owner) {
@@ -63,7 +63,7 @@ contract DSAuth is DSAuthEvents {
         } else if (authority == DSAuthority(0)) {
             return false;
         } else {
-            return authority.canCall(src, this, sig);
+            return authority.allowed(src, this, sig);
         }
     }
 
