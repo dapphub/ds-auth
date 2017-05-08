@@ -12,7 +12,7 @@
 pragma solidity ^0.4.8;
 
 contract DSAuthority {
-    function permitted(
+    function allowed(
         address src, address dst, bytes32 sig
     ) constant returns (bool);
 }
@@ -63,7 +63,7 @@ contract DSAuth is DSAuthEvents {
         } else if (authority == DSAuthority(0)) {
             return false;
         } else {
-            return authority.permitted(src, this, sig);
+            return authority.allowed(src, this, sig);
         }
     }
 

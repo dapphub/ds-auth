@@ -26,7 +26,7 @@ contract BooleanAuthority is DSAuthority {
         yes = _yes;
     }
     
-    function permitted(
+    function allowed(
         address src, address dst, bytes32 sig
     ) constant returns (bool) {
         return yes;
