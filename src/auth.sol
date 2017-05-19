@@ -50,11 +50,6 @@ contract DSAuth is DSAuthEvents {
         _;
     }
 
-    modifier authorized(bytes4 sig) {
-        assert(isAuthorized(msg.sender, sig));
-        _;
-    }
-
     function isAuthorized(address src, bytes4 sig) internal returns (bool) {
         if (src == address(this)) {
             return true;
