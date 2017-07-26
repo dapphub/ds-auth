@@ -160,63 +160,6 @@ This function modifier is the main entrypoint into the logic of ``DSAuth``. Deco
 
     modifier auth
 
-modifier authorized
-^^^^^^^^^^^^^^^^^^^
-
-DS-Auth also offers a slightly more complex modifier called ``authorized``. This modifier takes an arbitrary ``bytes4`` value instead of the standard ``msg.sig`` that is used by ``auth``. This means that you can group numerous functions under one ``sig`` that will all be controlled by the same line of authorization data. An example of the difference:
-
-::
-
-    // this contract needs two separate entries 
-    // in the owning DSAuthority contract
-
-    contract UsingAuth is DSAuth {
-
-        // calling approveAction will cause
-        // authority.canCall(msg.sender, this, "approveAction")
-        // to be called
-
-        function approveAction() auth {
-            // business logic
-        }
-
-        // calling approveAction will cause
-        // authority.canCall(msg.sender, this, "executeAction")
-        // to be called
-
-        function executeAction() auth {
-            // business logic
-        }
-    }
-
-    // this contract needs only one entry 
-    // in the owning DSAuthority contract
-
-    contract UsingAuthorized is DSAuth {
-
-        // calling approveAction will cause
-        // authority.canCall(msg.sender, this, "actions")
-        // to be called
-
-        function approveAction() authorized("actions") {
-            // business logic
-        }
-
-        // calling approveAction will cause
-        // authority.canCall(msg.sender, this, "actions")
-        // to be called
-
-        function executeAction() authorized("actions") {
-            // business logic
-        }
-    }
-
-The developer should be aware of the design tradeoff here: using ``auth`` is simpler and less prone to human-error, while using ``authorized`` is more convenient for large systems but requires more thorough review to ensure that functions are being grouped together properly. 
-
-
-::
-
-    modifier authorized(bytes4 sig)
 
 .. _DSAuthority:
 
