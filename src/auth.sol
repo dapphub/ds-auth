@@ -61,8 +61,4 @@ contract DSAuth is DSAuthEvents {
             return authority.canCall(src, this, sig);
         }
     }
-
-    function assert(bool x) internal {
-        if (!x) revert();
-    }
 }
