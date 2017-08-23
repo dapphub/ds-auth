@@ -17,32 +17,26 @@ contract DSAuthority {
     ) constant returns (bool);
 }
 
-contract DSAuthEvents {
-    event LogSetAuthority (address indexed authority);
-    event LogSetOwner     (address indexed owner);
-}
-
-contract DSAuth is DSAuthEvents {
+contract DSAuth is DSNote {
     DSAuthority  public  authority;
     address      public  owner;
 
     function DSAuth() {
-        owner = msg.sender;
-        LogSetOwner(msg.sender);
+        this.setOwner(msg.sender);
     }
 
     function setOwner(address owner_)
         auth
+        note
     {
         owner = owner_;
-        LogSetOwner(owner);
     }
 
     function setAuthority(DSAuthority authority_)
         auth
+        note
     {
         authority = authority_;
-        LogSetAuthority(authority);
     }
 
     modifier auth {
