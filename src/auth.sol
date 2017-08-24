@@ -9,7 +9,9 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
 
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.15;
+
+import "ds-note/note.sol";
 
 contract DSAuthority {
     function canCall(
@@ -22,7 +24,7 @@ contract DSAuth is DSNote {
     address      public  owner;
 
     function DSAuth() {
-        this.setOwner(msg.sender);
+        owner = msg.sender;
     }
 
     function setOwner(address owner_)

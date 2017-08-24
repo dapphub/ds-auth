@@ -9,7 +9,7 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
 
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.15;
 
 import "ds-test/test.sol";
 
@@ -34,15 +34,18 @@ contract BooleanAuthority is DSAuthority {
     }
 }
 
-contract DSAuthTest is DSTest, DSAuthEvents {
-    FakeVault vault = new FakeVault();
-    BooleanAuthority rejector = new BooleanAuthority(false);
+contract DSAuthTest is DSTest {
+    FakeVault vault;
+    BooleanAuthority rejector;
+
+    function setUp() {
+        vault = new FakeVault();
+        rejector = new BooleanAuthority(false);
+    }
 
     function test_owner() {
-        expectEventsExact(vault);
         vault.access();
         vault.setOwner(0);
-        LogSetOwner(0);
     }
 
     function testFail_non_owner_1() {
@@ -55,7 +58,7 @@ contract DSAuthTest is DSTest, DSAuthEvents {
         vault.setOwner(0);
     }
 
-    function test_accepting_authority() {    
+    function test_accepting_authority() {
         vault.setAuthority(new BooleanAuthority(true));
         vault.setOwner(0);
         vault.access();
