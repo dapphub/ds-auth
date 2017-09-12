@@ -46,7 +46,7 @@ contract DSAuth is DSAuthEvents {
     }
 
     modifier auth {
-        assert(isAuthorized(msg.sender, msg.sig));
+        require(isAuthorized(msg.sender, msg.sig));
         _;
     }
 
