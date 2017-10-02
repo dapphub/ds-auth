@@ -14,7 +14,7 @@ pragma solidity ^0.4.13;
 contract DSAuthority {
     function canCall(
         address src, address dst, bytes4 sig
-    ) constant returns (bool);
+    ) public view returns (bool);
 }
 
 contract DSAuthEvents {
@@ -26,12 +26,13 @@ contract DSAuth is DSAuthEvents {
     DSAuthority  public  authority;
     address      public  owner;
 
-    function DSAuth() {
+    function DSAuth() public {
         owner = msg.sender;
         LogSetOwner(msg.sender);
     }
 
     function setOwner(address owner_)
+        public
         auth
     {
         owner = owner_;
@@ -39,6 +40,7 @@ contract DSAuth is DSAuthEvents {
     }
 
     function setAuthority(DSAuthority authority_)
+        public
         auth
     {
         authority = authority_;
@@ -50,7 +52,7 @@ contract DSAuth is DSAuthEvents {
         _;
     }
 
-    function isAuthorized(address src, bytes4 sig) internal returns (bool) {
+    function isAuthorized(address src, bytes4 sig) internal view returns (bool) {
         if (src == address(this)) {
             return true;
         } else if (src == owner) {

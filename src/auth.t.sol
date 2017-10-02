@@ -16,19 +16,19 @@ import "ds-test/test.sol";
 import "./auth.sol";
 
 contract FakeVault is DSAuth {
-    function access() auth {}
+    function access() public view auth {}
 }
 
 contract BooleanAuthority is DSAuthority {
     bool yes;
-    
-    function BooleanAuthority(bool _yes) {
+
+    function BooleanAuthority(bool _yes) public {
         yes = _yes;
     }
-    
+
     function canCall(
         address src, address dst, bytes4 sig
-    ) constant returns (bool) {
+    ) public constant returns (bool) {
         src; dst; sig; // silence warnings
         return yes;
     }
@@ -38,39 +38,38 @@ contract DSAuthTest is DSTest, DSAuthEvents {
     FakeVault vault = new FakeVault();
     BooleanAuthority rejector = new BooleanAuthority(false);
 
-    function test_owner() {
+    function test_owner() public {
         expectEventsExact(vault);
         vault.access();
         vault.setOwner(0);
         LogSetOwner(0);
     }
 
-    function testFail_non_owner_1() {
+    function testFail_non_owner_1() public {
         vault.setOwner(0);
         vault.access();
     }
 
-    function testFail_non_owner_2() {
+    function testFail_non_owner_2() public {
         vault.setOwner(0);
         vault.setOwner(0);
     }
 
-    function test_accepting_authority() {    
+    function test_accepting_authority() public {
         vault.setAuthority(new BooleanAuthority(true));
         vault.setOwner(0);
         vault.access();
     }
 
-    function testFail_rejecting_authority_1() {
+    function testFail_rejecting_authority_1() public {
         vault.setAuthority(new BooleanAuthority(false));
         vault.setOwner(0);
         vault.access();
     }
 
-    function testFail_rejecting_authority_2() {
+    function testFail_rejecting_authority_2() public {
         vault.setAuthority(new BooleanAuthority(false));
         vault.setOwner(0);
         vault.setOwner(0);
     }
 }
-
