@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.23;
 
 import "ds-test/test.sol";
 
@@ -24,7 +24,7 @@ contract FakeVault is DSAuth {
 contract BooleanAuthority is DSAuthority {
     bool yes;
 
-    function BooleanAuthority(bool _yes) public {
+    constructor(bool _yes) public {
         yes = _yes;
     }
 
@@ -44,7 +44,7 @@ contract DSAuthTest is DSTest, DSAuthEvents {
         expectEventsExact(vault);
         vault.access();
         vault.setOwner(0);
-        LogSetOwner(0);
+        emit LogSetOwner(0);
     }
 
     function testFail_non_owner_1() public {
