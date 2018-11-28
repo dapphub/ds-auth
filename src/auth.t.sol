@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity ^0.4.23;
+pragma solidity >0.4.23;
 
 import "ds-test/test.sol";
 
@@ -30,7 +30,7 @@ contract BooleanAuthority is DSAuthority {
 
     function canCall(
         address src, address dst, bytes4 sig
-    ) public constant returns (bool) {
+    ) public view returns (bool) {
         src; dst; sig; // silence warnings
         return yes;
     }
@@ -41,37 +41,37 @@ contract DSAuthTest is DSTest, DSAuthEvents {
     BooleanAuthority rejector = new BooleanAuthority(false);
 
     function test_owner() public {
-        expectEventsExact(vault);
+        expectEventsExact(address(vault));
         vault.access();
-        vault.setOwner(0);
-        emit LogSetOwner(0);
+        vault.setOwner(address(0));
+        emit LogSetOwner(address(0));
     }
 
     function testFail_non_owner_1() public {
-        vault.setOwner(0);
+        vault.setOwner(address(0));
         vault.access();
     }
 
     function testFail_non_owner_2() public {
-        vault.setOwner(0);
-        vault.setOwner(0);
+        vault.setOwner(address(0));
+        vault.setOwner(address(0));
     }
 
     function test_accepting_authority() public {
         vault.setAuthority(new BooleanAuthority(true));
-        vault.setOwner(0);
+        vault.setOwner(address(0));
         vault.access();
     }
 
     function testFail_rejecting_authority_1() public {
         vault.setAuthority(new BooleanAuthority(false));
-        vault.setOwner(0);
+        vault.setOwner(address(0));
         vault.access();
     }
 
     function testFail_rejecting_authority_2() public {
         vault.setAuthority(new BooleanAuthority(false));
-        vault.setOwner(0);
-        vault.setOwner(0);
+        vault.setOwner(address(0));
+        vault.setOwner(address(0));
     }
 }
