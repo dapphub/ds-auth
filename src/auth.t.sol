@@ -21,7 +21,7 @@ contract FakeVault is DSAuth {
     function access() public view auth {}
 }
 
-contract BooleanAuthority is DSAuthority {
+contract BooleanAuthority {
     bool yes;
 
     constructor(bool _yes) public {
@@ -37,8 +37,11 @@ contract BooleanAuthority is DSAuthority {
 }
 
 contract DSAuthTest is DSTest, DSAuthEvents {
-    FakeVault vault = new FakeVault();
-    BooleanAuthority rejector = new BooleanAuthority(false);
+    FakeVault vault;
+
+    function setUp() public {
+      vault = new FakeVault();
+    }
 
     function test_owner() public {
         expectEventsExact(address(vault));
@@ -58,19 +61,20 @@ contract DSAuthTest is DSTest, DSAuthEvents {
     }
 
     function test_accepting_authority() public {
-        vault.setAuthority(new BooleanAuthority(true));
+        //hacky recasting to keep compatibility with <solc0.6.0
+        vault.setAuthority(DSAuthority(address(new BooleanAuthority(true))));
         vault.setOwner(address(0));
         vault.access();
     }
 
     function testFail_rejecting_authority_1() public {
-        vault.setAuthority(new BooleanAuthority(false));
+        vault.setAuthority(DSAuthority(address(new BooleanAuthority(false))));
         vault.setOwner(address(0));
         vault.access();
     }
 
     function testFail_rejecting_authority_2() public {
-        vault.setAuthority(new BooleanAuthority(false));
+        vault.setAuthority(DSAuthority(address(new BooleanAuthority(false))));
         vault.setOwner(address(0));
         vault.setOwner(address(0));
     }
