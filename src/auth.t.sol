@@ -43,13 +43,6 @@ contract DSAuthTest is DSTest, DSAuthEvents {
       vault = new FakeVault();
     }
 
-    function test_owner() public {
-        expectEventsExact(address(vault));
-        vault.access();
-        vault.setOwner(address(0));
-        emit LogSetOwner(address(0));
-    }
-
     function testFail_non_owner_1() public {
         vault.setOwner(address(0));
         vault.access();
