@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GNU-3
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -24,7 +25,7 @@ contract FakeVault is DSAuth {
 contract BooleanAuthority {
     bool yes;
 
-    constructor(bool _yes) public {
+    constructor(bool _yes) {
         yes = _yes;
     }
 
