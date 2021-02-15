@@ -25,7 +25,7 @@ contract FakeVault is DSAuth {
 contract BooleanAuthority {
     bool yes;
 
-    constructor(bool _yes) {
+    constructor(bool _yes) public {
         yes = _yes;
     }
 
